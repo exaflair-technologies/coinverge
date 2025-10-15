@@ -1,10 +1,9 @@
 import { Session } from '@supabase/supabase-js';
-import 'react-native-gesture-handler'; // Must be first import in the entry file for RN
-import 'react-native-reanimated'; // Must be loaded before any reanimated usage
-// import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
+import 'react-native-gesture-handler'; // Must be first import in the entry file for RN
+import 'react-native-reanimated'; // Must be loaded before any reanimated usage
 import Auth from '../components/Auth';
 import { supabase } from '../lib/supabase';
 
@@ -37,22 +36,3 @@ export default function RootLayout() {
     </>
   );
 }
-
-// // Simple implementation using Expo's Font API
-// function useFonts(fontMap: { [key: string]: any }): [boolean] {
-//   const [loaded, setLoaded] = useState(false);
-
-//   useEffect(() => {
-//     let isMounted = true;
-//     Font.loadAsync(fontMap).then(() => {
-//       if (isMounted) setLoaded(true);
-//     });
-//     return () => {
-//       isMounted = false;
-//     };
-//   }, [fontMap]);
-
-//   return [loaded];
-// }
-
-// Default export is provided inline with the function declaration above.
