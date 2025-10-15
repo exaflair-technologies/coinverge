@@ -1,37 +1,28 @@
+// Navigation reset to a non-existent 'Auth' route caused errors.
+// We rely on session-driven routing in `app/_layout.tsx` instead.
+import { StyleSheet } from 'react-native';
 
-import { Image } from 'expo-image';
-import {  Platform, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 import React from 'react';
-import { View, Alert, GestureResponderEvent } from 'react-native';
+import { Alert, GestureResponderEvent } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { Button } from '@rneui/themed';
 import { supabase } from '@/lib/supabase';
+import { Button } from '@rneui/themed';
 
+/**
+ * Dashboard home screen.
+ *
+ * Auth flow note: We do NOT imperatively navigate to an 'Auth' route.
+ * Instead, we sign the user out and let `app/_layout.tsx` render `<Auth />`
+ * when the Supabase auth listener detects a null session.
+ */
 export default function HomeScreen() {
-  // Import the correct type for your navigation (adjust the import path as needed)
-  // import { StackNavigationProp } from '@react-navigation/stack';
-  // import { RootStackParamList } from '@/types/navigation'; // Define this type according to your navigator
-
-  // Example for a stack navigator:
-  // const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
-
-  // If you don't have types set up, you can use 'any' as a quick fix:
-  const navigation = useNavigation<any>();
-
-  const handleSignOut = () => {
-    // Add your signout logic here (e.g., clearing tokens)
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Auth' }], // Change 'Auth' to your actual sign-in/sign-up route name if needed
-    });
-  };
+  /**
+   * Signs out via Supabase and relies on the global session listener to
+   * re-render the app state, avoiding direct navigation resets to 'Auth'.
+   */
   async function handleLogout(event: GestureResponderEvent): Promise<void> {
     try {
       const { error } = await supabase.auth.signOut();
@@ -39,10 +30,8 @@ export default function HomeScreen() {
         Alert.alert('Sign Out Failed', error.message);
         return;
       }
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Auth' }],
-      });
+      // Successful sign out: Root layout will switch to <Auth /> automatically
+      // through the Supabase auth state change listener.
     } catch (err: any) {
       Alert.alert('Sign Out Error', err.message || 'An unexpected error occurred.');
     }
@@ -52,7 +41,7 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       <ThemedView style={styles.header}>
         <ThemedText type="title">Dashboard</ThemedText>
-        <ThemedText type="subtitle">Welcome to Coinverge!</ThemedText>
+        <ThemedText type="subtitle">Hey</ThemedText>
       </ThemedView>
       
       <ThemedView style={styles.content}>
