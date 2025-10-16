@@ -1,7 +1,8 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
-    "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "typescript.preferences.organizeImportsIgnoreCase": false,
+  "typescript.preferences.organizeImportsCollation": "ordinal"
 }

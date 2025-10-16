@@ -1,9 +1,9 @@
+import 'react-native-gesture-handler'; // Must be first import in the entry file for RN
+import 'react-native-reanimated'; // Must be loaded before any reanimated usage
 import { Session } from '@supabase/supabase-js';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import 'react-native-gesture-handler'; // Must be first import in the entry file for RN
-import 'react-native-reanimated'; // Must be loaded before any reanimated usage
 import Auth from '../components/Auth';
 import { supabase } from '../lib/supabase';
 
