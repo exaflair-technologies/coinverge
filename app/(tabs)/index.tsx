@@ -1,103 +1,152 @@
 
-import { Image } from 'expo-image';
-import {  Platform, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-
-import React from 'react';
-import { View, Alert, GestureResponderEvent } from 'react-native';
-
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@rneui/themed';
-import { supabase } from '@/lib/supabase';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { Dimensions, StatusBar, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+const { width, height } = Dimensions.get('window');
 
-export default function HomeScreen() {
-  // Import the correct type for your navigation (adjust the import path as needed)
-  // import { StackNavigationProp } from '@react-navigation/stack';
-  // import { RootStackParamList } from '@/types/navigation'; // Define this type according to your navigator
+/**
+ * Intro/Onboarding screen component
+ * Displays the initial welcome screen before authentication
+ */
+export default function IntroScreen() {
+  const router = useRouter();
 
-  // Example for a stack navigator:
-  // const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Home'>>();
-
-  // If you don't have types set up, you can use 'any' as a quick fix:
-  const navigation = useNavigation<any>();
-
-  const handleSignOut = () => {
-    // Add your signout logic here (e.g., clearing tokens)
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Auth' }], // Change 'Auth' to your actual sign-in/sign-up route name if needed
-    });
+  /**
+   * Navigate to login screen
+   */
+  const handleGetStarted = () => {
+    // Navigate to login screen
+    router.push('/login');
   };
-  async function handleLogout(event: GestureResponderEvent): Promise<void> {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        Alert.alert('Sign Out Failed', error.message);
-        return;
-      }
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Auth' }],
-      });
-    } catch (err: any) {
-      Alert.alert('Sign Out Error', err.message || 'An unexpected error occurred.');
-    }
-  }
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <ThemedText type="title">Dashboard</ThemedText>
-        <ThemedText type="subtitle">Welcome to Coinverge!</ThemedText>
-      </ThemedView>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#000000" />
       
-      <ThemedView style={styles.content}>
-        <ThemedText>You are successfully logged in!</ThemedText>
-        <ThemedText>This is your main dashboard screen.</ThemedText>
-      </ThemedView>
-
-      <ThemedView style={styles.actions}>
-        <Button 
-          title="Sign Out" 
-          onPress={handleLogout}
-          buttonStyle={styles.logoutButton}
+      {/* Background with gradient overlay */}
+      <View style={styles.background}>
+        <LinearGradient
+          colors={['#000000', '#1a1a1a', '#000000']}
+          style={styles.gradient}
         />
-      </ThemedView>
+      </View>
 
-      
-      {/* Sign Out Button */}
-    </ThemedView>
+      {/* Main content */}
+      <View style={styles.content}>
+        {/* Illustration section - using db.png image */}
+        <View style={styles.illustrationContainer}>
+          <Image
+            source={require('../../assets/images/db.png')}
+            style={styles.logoImage}
+            contentFit="contain"
+          />
+        </View>
+
+        {/* Text content */}
+        <View style={styles.textContainer}>
+          <ThemedText style={styles.title}>
+            Coinverge - Your Crypto, Your Control
+          </ThemedText>
+          <ThemedText style={styles.subtitle}>
+            Step into the future of secure digital wealth. Smarter. Safer. Stronger.
+          </ThemedText>
+        </View>
+
+        {/* Call to action button */}
+        <View style={styles.buttonContainer}>
+        <LinearGradient
+          colors={['#8B5CF6', '#7C3AED']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradientButton}
+        >
+          <Button
+            title="Get Started"
+            onPress={handleGetStarted}
+            buttonStyle={styles.getStartedButton}
+            titleStyle={styles.buttonText}
+          />
+        </LinearGradient>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#000000',
   },
-  header: {
-    alignItems: 'center',
-    marginTop: 60,
-    marginBottom: 40,
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  gradient: {
+    flex: 1,
   },
   content: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
   },
-  actions: {
+  illustrationContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  logoImage: {
+    width: width * 1.5,
+    height: height * 0.5625,
+    maxWidth: 656.25,
+    maxHeight: 562.5,
+    resizeMode: 'contain',
+  },
+  textContainer: {
+    alignItems: 'center',
     marginBottom: 40,
   },
-  logoutButton: {
-    backgroundColor: '#ff4444',
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 16,
+    lineHeight: 36,
   },
-  signOutContainer: {
-    marginTop: 32,
-    alignItems: 'center',
+  subtitle: {
+    fontSize: 16,
+    color: '#CCCCCC',
+    textAlign: 'left',
+    lineHeight: 24,
+    paddingHorizontal: 20,
+  },
+  buttonContainer: {
+    paddingHorizontal: 20,
+  },
+  gradientButton: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  getStartedButton: {
+    backgroundColor: 'transparent',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
