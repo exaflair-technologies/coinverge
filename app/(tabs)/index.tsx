@@ -1,12 +1,10 @@
-
-import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@rneui/themed';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
 import { Dimensions, StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemedText } from '../../components/ThemedText';
 const { width, height } = Dimensions.get('window');
 
 /**
