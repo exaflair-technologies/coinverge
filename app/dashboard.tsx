@@ -4,9 +4,9 @@ import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
 import { Dimensions, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { supabase } from '../lib/supabase';
 
 const { width, height } = Dimensions.get('window');
 
@@ -25,11 +25,17 @@ export default function DashboardScreen() {
   };
 
   /**
-   * Handle settings navigation
+   * Handle logout action
+   * Signs out the user quickly and navigates to auth page
    */
-  const handleSettings = () => {
-    // TODO: Navigate to settings
-    console.log('Settings pressed');
+  const handleLogout = async () => {
+    // Navigate immediately for faster UX, sign out in background
+    router.replace('/auth');
+    
+    // Sign out in background without blocking navigation
+    supabase.auth.signOut().catch((error) => {
+      console.error('Logout error:', error);
+    });
   };
 
   /**
@@ -76,8 +82,8 @@ export default function DashboardScreen() {
             <ThemedText style={styles.greeting}>Hello Nitin</ThemedText>
           </View>
           
-          <TouchableOpacity style={styles.settingsButton} onPress={handleSettings}>
-            <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color="#FFFFFF" />
           </TouchableOpacity>
           </View>
 
@@ -357,7 +363,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  settingsButton: {
+  logoutButton: {
     padding: 8,
   },
   topRow: {
@@ -521,7 +527,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(16, 185, 129, 0.2)',
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 0,
     borderRadius: 12,
   },
   changeText: {
@@ -549,7 +555,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 4, // Reduce top margin to tighten MY FUNDS header vertical space
+    marginTop: 0, // Reduce top margin to tighten MY FUNDS header vertical space
   },
   sectionTitle: { color: '#9CA3AF', fontSize: 12 },
   fundsCarousel: {
@@ -572,7 +578,7 @@ const styles = StyleSheet.create({
   fundHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }, // Slightly smaller gap to further reduce vertical footprint
   fundTitle: { color: '#F3F4F6', fontWeight: '700' },
   fundCode: { color: '#9CA3AF', marginLeft: 4, fontSize: 11 },
-  fundMiniChartGreen: { height: 20, backgroundColor: '#064E3B', borderRadius: 6, marginBottom: 8 }, // Further reduce mini-chart height for a more compact card
+  fundMiniChartGreen: { height: 150, backgroundColor: '#064E3B', borderRadius: 6, marginBottom: 10 }, // Further reduce mini-chart height for a more compact card
   fundFooterRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   fundPrice: { color: '#E5E7EB', fontWeight: '700', fontSize: 14 },
   fundChangeGreen: { color: '#10B981', fontSize: 11 },

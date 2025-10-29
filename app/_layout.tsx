@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import 'react-native-gesture-handler'; // Must be first import in the entry file for RN
 import 'react-native-reanimated'; // Must be loaded before any reanimated usage
-import Auth from '../components/Auth';
 import { supabase } from '../lib/supabase';
 
 /**
@@ -24,13 +23,13 @@ export default function RootLayout() {
     return () => subscription?.subscription.unsubscribe();
   }, []);
 
-  if (!session) return <Auth />;
-
   return (
     <>
       <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="dashboard" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

@@ -1,11 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button } from '@rneui/themed';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
 import { Dimensions, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -20,53 +16,40 @@ export default function LoginScreen() {
 
   /**
    * Handle social login button press
+   * Navigates to the email/password authentication page
+   * TODO: Implement actual social login provider integration with Supabase
    */
   const handleSocialLogin = async (provider: string) => {
     console.log(`Login with ${provider}`);
-    // TODO: Implement social login logic
-    // Mark intro as completed and navigate to dashboard
-    try {
-      await AsyncStorage.setItem('intro_completed', 'true');
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Error storing intro completion:', error);
-      router.push('/dashboard');
-    }
+    // For now, all social logins navigate to email/password auth page
+    // TODO: Implement actual OAuth flows for each provider
+    router.push('/auth');
   };
 
   /**
-   * Handle Get Started button press
+   * Handle email login button press
+   * Navigates to the email/password authentication page
    */
-  const handleGetStarted = async () => {
-    try {
-      // Mark intro as completed and navigate to dashboard
-      await AsyncStorage.setItem('intro_completed', 'true');
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Error storing intro completion:', error);
-      router.push('/dashboard');
-    }
+  const handleEmailLogin = () => {
+    router.push('/auth');
   };
 
   /**
    * Handle back navigation
+   * Navigates back to landing page if navigation history exists, otherwise goes to index
    */
   const handleBack = () => {
-    router.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
       
-      {/* Background with gradient overlay */}
-      <View style={styles.background}>
-        <LinearGradient
-          colors={['#000000', '#0a0a0a', '#000000']}
-          style={styles.gradient}
-        />
-      </View>
-
       {/* Back button */}
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
         <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
@@ -93,52 +76,23 @@ export default function LoginScreen() {
           </ThemedText>
         </View>
 
-        {/* Social login icons */}
+        {/* Social login icons - Mail and Google only */}
         <View style={styles.socialLoginContainer}>
+          {/* Email option */}
           <TouchableOpacity 
             style={styles.socialButton} 
-            onPress={() => handleSocialLogin('Facebook')}
+            onPress={handleEmailLogin}
           >
-            <Ionicons name="logo-facebook" size={24} color="#1877F2" />
+            <Ionicons name="mail" size={24} color="#FFFFFF" />
           </TouchableOpacity>
           
+          {/* Google option */}
           <TouchableOpacity 
             style={styles.socialButton} 
             onPress={() => handleSocialLogin('Google')}
           >
             <Ionicons name="logo-google" size={24} color="#DB4437" />
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.socialButton} 
-            onPress={() => handleSocialLogin('Apple')}
-          >
-            <Ionicons name="logo-apple" size={24} color="#000000" />
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.socialButton} 
-            onPress={() => handleSocialLogin('LinkedIn')}
-          >
-            <Ionicons name="logo-linkedin" size={24} color="#0077B5" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Get Started button */}
-        <View style={styles.buttonContainer}>
-          <LinearGradient
-            colors={['#8B5CF6', '#3B82F6']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.gradientButton}
-          >
-            <Button
-              title="Get Started"
-              onPress={handleGetStarted}
-              buttonStyle={styles.getStartedButton}
-              titleStyle={styles.buttonText}
-            />
-          </LinearGradient>
         </View>
       </View>
     </SafeAreaView>
@@ -149,16 +103,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000000',
-  },
-  background: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  gradient: {
-    flex: 1,
   },
   backButton: {
     position: 'absolute',
