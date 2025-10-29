@@ -5,10 +5,10 @@ import { useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import * as Font from 'expo-font';
-import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import { ThemeProvider } from '@/contexts/ThemeContext';
-import ImprovedAuth from '@/components/ImprovedAuth';
-import LoadingScreen from '@/components/LoadingScreen';
+import { AuthProvider, useAuth } from '../contexts/AuthContext';
+import { ThemeProvider } from '../contexts/ThemeContext';
+import ImprovedAuth from '../components/ImprovedAuth';
+import LoadingScreen from '../components/LoadingScreen';
 
 // Define or import your themes
 const DarkTheme = {

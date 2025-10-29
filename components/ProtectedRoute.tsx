@@ -36,7 +36,7 @@ export default function ProtectedRoute({
       return <>{fallback}</>;
     }
     // Redirect to auth screen
-    router.replace(redirectTo);
+    router.replace(redirectTo as any);
     return null;
   }
 
@@ -46,7 +46,7 @@ export default function ProtectedRoute({
       return <>{fallback}</>;
     }
     // Redirect to verification screen
-    router.replace('/verify-email');
+    router.replace('/verify-email' as any);
     return null;
   }
 
