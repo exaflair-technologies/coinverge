@@ -30,7 +30,7 @@ export default function DashboardScreen() {
    */
   const handleLogout = async () => {
     // Navigate immediately for faster UX, sign out in background
-    router.replace('/auth');
+    router.replace('/');
     
     // Sign out in background without blocking navigation
     supabase.auth.signOut().catch((error) => {

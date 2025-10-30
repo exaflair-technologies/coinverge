@@ -18,7 +18,17 @@ export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+    // Initialize session; if refresh token is stale/invalid, sign out to reset storage
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setSession(session);
+      try {
+        await supabase.auth.getUser();
+      } catch (_e) {
+        // Invalid refresh token or corrupted session – force reset
+        await supabase.auth.signOut();
+        setSession(null);
+      }
+    });
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => setSession(session));
     return () => subscription?.subscription.unsubscribe();
   }, []);
@@ -29,7 +39,6 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="auth" options={{ headerShown: false }} />
         <Stack.Screen name="dashboard" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

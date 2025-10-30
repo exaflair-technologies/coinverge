@@ -1,6 +1,6 @@
 import { Button } from '@rneui/themed';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { useEffect } from 'react';
 import { Dimensions, StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -28,7 +28,7 @@ export default function LandingScreen() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         // User is already logged in, redirect to dashboard
-        router.replace('/dashboard');
+        router.replace('/dashboard' as Href);
       }
     };
     
@@ -44,7 +44,7 @@ export default function LandingScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top','bottom']}>
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
       
       {/* Main content */}
