@@ -25,7 +25,7 @@ export default function LoginScreen() {
   useEffect(() => {
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        router.replace('/dashboard' as Href);
+        router.replace('/(tabs)' as Href);
       }
     });
     return () => subscription.subscription?.unsubscribe();

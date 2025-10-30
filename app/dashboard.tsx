@@ -1,141 +1,187 @@
-// To-Do: Fix the padding of the segments row and the padding of the holdings section.
+"use client"
 
-import { ThemedText } from '@/components/ThemedText';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import { Dimensions, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from '../lib/supabase';
+import { ThemedText } from "@/components/ThemedText"
+import { Ionicons } from "@expo/vector-icons"
+import { LinearGradient } from "expo-linear-gradient"
+import { useRouter } from "expo-router"
+import { useEffect, useRef, useState } from "react"
+import { Dimensions, Modal, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from "react-native"
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { supabase } from "../lib/supabase"
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window")
+
+type IoniconName = keyof typeof Ionicons.glyphMap
+type CryptoItem = { symbol: string; name: string; price: string; change: string; icon: IoniconName }
 
 /**
  * Dashboard screen component
  * Displays user's crypto portfolio with balance, holdings, and actions
  */
 export default function DashboardScreen() {
-  const router = useRouter();
+  const router = useRouter()
+  const insets = useSafeAreaInsets()
+  const [userInitial, setUserInitial] = useState("N")
+  const [showProfileMenu, setShowProfileMenu] = useState(false)
+  const [showBuySellModal, setShowBuySellModal] = useState(false)
+  const [activeTab, setActiveTab] = useState("popular")
+  const profileMenuRef = useRef(null)
 
-  /**
-   * Handle back navigation
-   */
-  const handleBack = () => {
-    router.back();
-  };
+  useEffect(() => {
+    const fetchUserInitial = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user?.email) {
+        setUserInitial(user.email[0].toUpperCase())
+      }
+    }
+    fetchUserInitial()
+    const { data: subscription } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        router.replace("/")
+      }
+    })
+    return () => subscription.subscription?.unsubscribe()
+  }, [])
 
-  /**
-   * Handle logout action
-   * Signs out the user quickly and navigates to auth page
-   */
   const handleLogout = async () => {
-    // Navigate immediately for faster UX, sign out in background
-    router.replace('/');
-    
-    // Sign out in background without blocking navigation
-    supabase.auth.signOut().catch((error) => {
-      console.error('Logout error:', error);
-    });
-  };
+    try {
+      await supabase.auth.signOut()
+      // onAuthStateChange will handle navigation; add fallback just in case
+      router.replace("/")
+    } catch (error) {
+      console.error("Logout error:", error)
+    }
+  }
 
-  /**
-   * Handle action buttons
-   */
-  const handleAction = (action: string) => {
-    console.log(`${action} pressed`);
-    // TODO: Implement action logic
-  };
+  const handleProfilePress = () => {
+    setShowProfileMenu(false)
+    router.push("/profile" as any)
+  }
 
-  /**
-   * Handle see all holdings
-   */
+  const handleSettingsPress = () => {
+    setShowProfileMenu(false)
+    router.push("/settings" as any)
+  }
+
+  const handleBuyPress = () => {
+    setShowBuySellModal(false)
+    router.push("/buy-sell" as any)
+  }
+
+  const handleSellPress = () => {
+    setShowBuySellModal(false)
+    router.push("/buy-sell" as any)
+  }
+
   const handleSeeAll = () => {
-    // Navigate to holdings list screen (cast for typed routes until types update)
-    router.push('/holdings' as any);
-  };
+    router.push("/holdings" as any)
+  }
+
+  const popularCryptos: CryptoItem[] = [
+    { symbol: "BTC", name: "Bitcoin", price: "$28,450.00", change: "+2.5%", icon: "logo-bitcoin" },
+    { symbol: "ETH", name: "Ethereum", price: "$1,850.00", change: "+1.8%", icon: "logo-electron" },
+    { symbol: "SOL", name: "Solana", price: "$142.50", change: "+5.2%", icon: "logo-usd" },
+    { symbol: "ADA", name: "Cardano", price: "$0.98", change: "+3.1%", icon: "logo-usd" },
+  ]
+
+  const biggestMovers: CryptoItem[] = [
+    { symbol: "DOGE", name: "Dogecoin", price: "$0.42", change: "+12.5%", icon: "logo-usd" },
+    { symbol: "SHIB", name: "Shiba Inu", price: "$0.000018", change: "+8.3%", icon: "logo-usd" },
+    { symbol: "PEPE", name: "Pepe", price: "$0.0000089", change: "+15.7%", icon: "logo-usd" },
+    { symbol: "FLOKI", name: "Floki", price: "$0.000156", change: "+9.2%", icon: "logo-usd" },
+  ]
+
+  const displayedCryptos = activeTab === "popular" ? popularCryptos : biggestMovers
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
-      
-      {/* Background with gradient overlay */}
+
       <View style={styles.background}>
-        <LinearGradient
-          colors={['#000000', '#0a0a0a', '#000000']}
-          style={styles.gradient}
-        />
+        <LinearGradient colors={["#000000", "#0a0a0a", "#000000"]} style={styles.gradient} />
       </View>
 
-      <View style={styles.pageContainer}>
-        {/* Fixed block: header + portfolio + quick actions + my funds + tabs */}
-        <View>
-          {/* Header Section */}
-          <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-          
-          <View style={styles.profileSection}>
-            <View style={styles.profileImage}>
-              <Ionicons name="person" size={24} color="#FFFFFF" />
-            </View>
-            <ThemedText style={styles.greeting}>Hello Nitin</ThemedText>
-          </View>
-          
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-          </View>
+      <ScrollView
+        style={styles.pageContainer}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: Math.max(8, insets.top + 4) }]}
+      >
+        <View style={styles.header}>
+          <ThemedText style={styles.headerTitle}>Portfolio</ThemedText>
 
-          {/* Current Balance Card - gradient (pink/purple) */}
-          <View style={styles.balanceCard}>
-            <LinearGradient
-              colors={['#8B5CF6', '#EC4899']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.balanceGradient}
-            >
-              <ThemedText style={styles.balanceLabel}>MAIN PORTFOLIO</ThemedText>
-              <View style={styles.balanceRow}>
-                <ThemedText style={styles.balanceAmount}>$87,4.12</ThemedText>
-                <View style={styles.balanceChange}>
-                  <Ionicons name="trending-up" size={16} color="#10B981" />
-                  <ThemedText style={styles.changeText}>10.2%</ThemedText>
-                </View>
+          <View style={styles.profileMenuContainer}>
+            <TouchableOpacity style={styles.profileButton} onPress={() => setShowProfileMenu(!showProfileMenu)}>
+              <View style={styles.profileAvatar}>
+                <ThemedText style={styles.profileInitial}>{userInitial}</ThemedText>
               </View>
-            </LinearGradient>
-          </View>
+            </TouchableOpacity>
 
-          {/* Quick actions: Sell / Buy / Receive / Earn */}
-          <View style={styles.actionButtons}>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.sellButton]}
-              onPress={() => handleAction('Sell')}
-            >
-              <ThemedText style={styles.sellButtonText}>Sell</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.secondaryButton]}
-              onPress={() => handleAction('Buy')}
-            >
-              <ThemedText style={styles.secondaryButtonText}>Buy</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.secondaryButton]}
-              onPress={() => handleAction('Receive')}
-            >
-              <ThemedText style={styles.secondaryButtonText}>Receive</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.actionButton, styles.secondaryButton]}
-              onPress={() => handleAction('Earn')}
-            >
-              <ThemedText style={styles.secondaryButtonText}>Earn</ThemedText>
-            </TouchableOpacity>
+            {showProfileMenu && (
+              <View style={styles.profileDropdown}>
+                <TouchableOpacity style={styles.menuItem} onPress={handleProfilePress}>
+                  <Ionicons name="person" size={18} color="#FFFFFF" />
+                  <ThemedText style={styles.menuItemText}>Profile</ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={handleSettingsPress}>
+                  <Ionicons name="settings" size={18} color="#FFFFFF" />
+                  <ThemedText style={styles.menuItemText}>Settings</ThemedText>
+                </TouchableOpacity>
+                <View style={styles.menuDivider} />
+                <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+                  <Ionicons name="log-out" size={18} color="#EF4444" />
+                  <ThemedText style={[styles.menuItemText, { color: "#EF4444" }]}>Logout</ThemedText>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
 
-        {/* Action Buttons removed for iPhone style */}
+        {/* Current Balance Card - gradient (pink/purple) */}
+        <View style={styles.balanceCard}>
+          <LinearGradient
+            colors={["#8B5CF6", "#EC4899"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.balanceGradient}
+          >
+            <ThemedText style={styles.balanceLabel}>MAIN PORTFOLIO</ThemedText>
+            <View style={styles.balanceRow}>
+              <View style={styles.balanceLeft}>
+                <ThemedText style={styles.balanceAmount}>$87,412.50</ThemedText>
+                <ThemedText style={styles.balanceSubtext}>Total Balance</ThemedText>
+              </View>
+              <View style={styles.balanceChange}>
+                <Ionicons name="trending-up" size={16} color="#10B981" />
+                <ThemedText style={styles.changeText}>+10.2%</ThemedText>
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
+
+        {/* Quick actions: Sell / Buy / Receive / Earn */}
+        <View style={styles.actionButtons}>
+          <TouchableOpacity style={[styles.actionButton, styles.sellButton]} onPress={() => handleAction("Sell")}>
+            <Ionicons name="arrow-up" size={20} color="#FFFFFF" />
+            <ThemedText style={styles.sellButtonText}>Sell</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.actionButton, styles.secondaryButton]} onPress={() => handleAction("Buy")}>
+            <Ionicons name="arrow-down" size={20} color="#FFFFFF" />
+            <ThemedText style={styles.secondaryButtonText}>Buy</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.secondaryButton]}
+            onPress={() => handleAction("Receive")}
+          >
+            <Ionicons name="download" size={20} color="#FFFFFF" />
+            <ThemedText style={styles.secondaryButtonText}>Receive</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.actionButton, styles.secondaryButton]} onPress={() => handleAction("Earn")}>
+            <Ionicons name="star" size={20} color="#FFFFFF" />
+            <ThemedText style={styles.secondaryButtonText}>Earn</ThemedText>
+          </TouchableOpacity>
+        </View>
 
         {/* MY FUNDS + Most popular tabs */}
         <View style={styles.myFundsHeaderRow}>
@@ -144,6 +190,7 @@ export default function DashboardScreen() {
             <ThemedText style={styles.seeAllText}>View all</ThemedText>
           </TouchableOpacity>
         </View>
+
         {/* Horizontal sliding cards (My Funds) */}
         <ScrollView
           horizontal
@@ -154,26 +201,42 @@ export default function DashboardScreen() {
           snapToInterval={width * 0.72}
         >
           {/* Bitcoin card */}
-          <TouchableOpacity style={styles.fundCard} onPress={() => router.push({ pathname: '/trading/[symbol]' as any, params: { symbol: 'BTC', name: 'Bitcoin', price: '27642.01', qty: '2.05' } })}>
+          <TouchableOpacity
+            style={styles.fundCard}
+            onPress={() =>
+              router.push({
+                pathname: "/trading/[symbol]" as any,
+                params: { symbol: "BTC", name: "Bitcoin", price: "27642.01", qty: "2.05" },
+              })
+            }
+          >
             <View style={styles.fundHeaderRow}>
-              <Ionicons name="logo-bitcoin" size={16} color="#ffffff" />
+              <Ionicons name="logo-bitcoin" size={16} color="#F59E0B" />
               <ThemedText style={styles.fundTitle}>Bitcoin</ThemedText>
               <ThemedText style={styles.fundCode}>BTC</ThemedText>
             </View>
-            <View style={styles.fundMiniChartGreen} />
+            <LinearGradient colors={["#10B98133", "#10B98108"]} style={styles.fundMiniChartGreen} />
             <View style={styles.fundFooterRow}>
               <ThemedText style={styles.fundPrice}>$27,642.01</ThemedText>
               <ThemedText style={styles.fundChangeGreen}>+2,812 • +0.97%</ThemedText>
             </View>
           </TouchableOpacity>
           {/* Ethereum card */}
-          <TouchableOpacity style={styles.fundCard} onPress={() => router.push({ pathname: '/trading/[symbol]' as any, params: { symbol: 'ETH', name: 'Ethereum', price: '1666.36', qty: '50' } })}>
+          <TouchableOpacity
+            style={styles.fundCard}
+            onPress={() =>
+              router.push({
+                pathname: "/trading/[symbol]" as any,
+                params: { symbol: "ETH", name: "Ethereum", price: "1666.36", qty: "50" },
+              })
+            }
+          >
             <View style={styles.fundHeaderRow}>
-              <Ionicons name="logo-electron" size={16} color="#ffffff" />
+              <Ionicons name="logo-electron" size={16} color="#627EEA" />
               <ThemedText style={styles.fundTitle}>Ethereum</ThemedText>
               <ThemedText style={styles.fundCode}>ETH</ThemedText>
             </View>
-            <View style={styles.fundMiniChartGreen} />
+            <LinearGradient colors={["#3B82F633", "#3B82F608"]} style={styles.fundMiniChartGreen} />
             <View style={styles.fundFooterRow}>
               <ThemedText style={styles.fundPrice}>$1,666.36</ThemedText>
               <ThemedText style={styles.fundChangeGreen}>+0.016 • +0.01%</ThemedText>
@@ -182,135 +245,105 @@ export default function DashboardScreen() {
         </ScrollView>
 
         <View style={styles.segmentsRow}>
-          <TouchableOpacity style={[styles.segment, styles.segmentActive]}>
-            <ThemedText style={styles.segmentActiveText}>Most popular</ThemedText>
+          <TouchableOpacity
+            style={[styles.segment, activeTab === "popular" && styles.segmentActive]}
+            onPress={() => setActiveTab("popular")}
+          >
+            <ThemedText style={activeTab === "popular" ? styles.segmentActiveText : styles.segmentText}>
+              Most popular
+            </ThemedText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.segment}>
-            <ThemedText style={styles.segmentText}>Biggest movers</ThemedText>
+          <TouchableOpacity
+            style={[styles.segment, activeTab === "movers" && styles.segmentActive]}
+            onPress={() => setActiveTab("movers")}
+          >
+            <ThemedText style={activeTab === "movers" ? styles.segmentActiveText : styles.segmentText}>
+              Biggest movers
+            </ThemedText>
           </TouchableOpacity>
           <TouchableOpacity style={styles.segment}>
             <ThemedText style={styles.segmentText}>Recommend</ThemedText>
           </TouchableOpacity>
         </View>
 
-        {/* Scrollable list only (Most popular / Biggest movers / Recommend) */}
-        <ScrollView style={styles.listScroll} showsVerticalScrollIndicator={false}>
-          <View style={[styles.holdingsSection, { paddingTop: 8 }]}>
-            <View style={styles.holdingsList}>
-            {/* Ethereum */}
-            <TouchableOpacity 
-              style={styles.holdingItem}
-              onPress={() => router.push({ pathname: '/trading/[symbol]' as any, params: { symbol: 'ETH', name: 'Ethereum', price: '503.12', qty: '50' } })}
-            >
-              <View style={styles.holdingLeft}>
-                <View style={styles.cryptoIcon}>
-                  <ThemedText style={styles.cryptoIconText}>Ξ</ThemedText>
+        {/* Holdings list - Popular or Biggest Movers */}
+        <View style={styles.holdingsSection}>
+          <View style={styles.holdingsList}>
+            {displayedCryptos.map((crypto, index) => (
+              <TouchableOpacity key={index} style={styles.holdingItem}>
+                <View style={styles.holdingLeft}>
+                  <View style={styles.cryptoIcon}>
+                    <Ionicons name={crypto.icon} size={20} color="#FFFFFF" />
+                  </View>
+                  <View style={styles.cryptoInfo}>
+                    <ThemedText style={styles.cryptoName}>{crypto.name}</ThemedText>
+                    <ThemedText style={styles.cryptoCode}>{crypto.symbol}</ThemedText>
+                  </View>
                 </View>
-                <View style={styles.cryptoInfo}>
-                  <ThemedText style={styles.cryptoName}>Ethereum</ThemedText>
-                  <ThemedText style={styles.cryptoCode}>ETH</ThemedText>
+                <View style={styles.holdingRight}>
+                  <View style={styles.chartContainer}>
+                    <View style={[styles.chartLine, styles.greenLine]} />
+                  </View>
+                  <View style={styles.holdingValues}>
+                    <ThemedText style={styles.holdingValue}>{crypto.price}</ThemedText>
+                    <ThemedText style={[styles.holdingQuantity, { color: "#10B981" }]}>{crypto.change}</ThemedText>
+                  </View>
                 </View>
-              </View>
-              <View style={styles.holdingRight}>
-                <View style={styles.chartContainer}>
-                  <View style={[styles.chartLine, styles.greenLine]} />
-                </View>
-                <View style={styles.holdingValues}>
-                  <ThemedText style={styles.holdingValue}>$503.12</ThemedText>
-                  <ThemedText style={styles.holdingQuantity}>50 ETH</ThemedText>
-                </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
 
-            {/* Bitcoin */}
-            <TouchableOpacity 
-              style={styles.holdingItem}
-              onPress={() => router.push({ pathname: '/trading/[symbol]' as any, params: { symbol: 'BTC', name: 'Bitcoin', price: '26927', qty: '2.05' } })}
-            >
-              <View style={styles.holdingLeft}>
-                <View style={styles.cryptoIcon}>
-                  <ThemedText style={styles.cryptoIconText}>₿</ThemedText>
-                </View>
-                <View style={styles.cryptoInfo}>
-                  <ThemedText style={styles.cryptoName}>Bitcoin</ThemedText>
-                  <ThemedText style={styles.cryptoCode}>BTC</ThemedText>
-                </View>
-              </View>
-              <View style={styles.holdingRight}>
-                <View style={styles.chartContainer}>
-                  <View style={[styles.chartLine, styles.orangeLine]} />
-                </View>
-                <View style={styles.holdingValues}>
-                  <ThemedText style={styles.holdingValue}>$26927</ThemedText>
-                  <ThemedText style={styles.holdingQuantity}>2.05 BTC</ThemedText>
-                </View>
-              </View>
-            </TouchableOpacity>
+      <Modal visible={showBuySellModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <ThemedText style={styles.modalTitle}>Quick Action</ThemedText>
+              <TouchableOpacity onPress={() => setShowBuySellModal(false)}>
+                <Ionicons name="close" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
 
-            {/* Litecoin */}
-            <TouchableOpacity 
-              style={styles.holdingItem}
-              onPress={() => router.push({ pathname: '/trading/[symbol]' as any, params: { symbol: 'LTC', name: 'Litecoin', price: '6927', qty: '2.05' } })}
-            >
-              <View style={styles.holdingLeft}>
-                <View style={styles.cryptoIcon}>
-                  <ThemedText style={styles.cryptoIconText}>Ł</ThemedText>
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity style={styles.modalButton} onPress={handleBuyPress}>
+                <View style={styles.modalButtonIcon}>
+                  <Ionicons name="arrow-down" size={24} color="#FFFFFF" />
                 </View>
-                <View style={styles.cryptoInfo}>
-                  <ThemedText style={styles.cryptoName}>Litecoin</ThemedText>
-                  <ThemedText style={styles.cryptoCode}>LTC</ThemedText>
+                <View>
+                  <ThemedText style={styles.modalButtonTitle}>Buy Crypto</ThemedText>
+                  <ThemedText style={styles.modalButtonSubtitle}>Purchase cryptocurrencies</ThemedText>
                 </View>
-              </View>
-              <View style={styles.holdingRight}>
-                <View style={styles.chartContainer}>
-                  <View style={[styles.chartLine, styles.greenLine]} />
-                </View>
-                <View style={styles.holdingValues}>
-                  <ThemedText style={styles.holdingValue}>$6927</ThemedText>
-                  <ThemedText style={styles.holdingQuantity}>2.05 LTC</ThemedText>
-                </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
 
-            {/* Ripple */}
-            <TouchableOpacity 
-              style={styles.holdingItem}
-              onPress={() => router.push({ pathname: '/trading/[symbol]' as any, params: { symbol: 'XRP', name: 'Ripple', price: '4637', qty: '2.05' } })}
-            >
-              <View style={styles.holdingLeft}>
-                <View style={styles.cryptoIcon}>
-                  <ThemedText style={styles.cryptoIconText}>X</ThemedText>
+              <TouchableOpacity style={styles.modalButton} onPress={handleSellPress}>
+                <View style={styles.modalButtonIcon}>
+                  <Ionicons name="arrow-up" size={24} color="#FFFFFF" />
                 </View>
-                <View style={styles.cryptoInfo}>
-                  <ThemedText style={styles.cryptoName}>Ripple</ThemedText>
-                  <ThemedText style={styles.cryptoCode}>XRP</ThemedText>
+                <View>
+                  <ThemedText style={styles.modalButtonTitle}>Sell Crypto</ThemedText>
+                  <ThemedText style={styles.modalButtonSubtitle}>Sell your holdings</ThemedText>
                 </View>
-              </View>
-              <View style={styles.holdingRight}>
-                <View style={styles.chartContainer}>
-                  <View style={[styles.chartLine, styles.greenLine]} />
-                </View>
-                <View style={styles.holdingValues}>
-                  <ThemedText style={styles.holdingValue}>$4637</ThemedText>
-                  <ThemedText style={styles.holdingQuantity}>2.05 XRP</ThemedText>
-                </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
-      </View>
+        </View>
+      </Modal>
     </SafeAreaView>
-  );
+  )
+
+  function handleAction(action: string) {
+    console.log(`${action} pressed`)
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
   },
   background: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
@@ -319,388 +352,338 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
-  scrollView: {
-    flex: 1,
-  },
   pageContainer: {
     flex: 1,
   },
-  stickyContainer: {
-    backgroundColor: 'transparent',
-    paddingBottom: 6,
-  },
-  listScroll: {
-    flex: 1,
+  scrollContent: {
+    paddingBottom: 100,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingTop: 16,
+    paddingBottom: 20,
   },
-  backButton: {
-    padding: 8,
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#FFFFFF",
   },
-  profileSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
+  profileMenuContainer: {
+    position: "relative",
   },
-  profileImage: {
+  profileButton: {
+    padding: 4,
+  },
+  profileAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#333333',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
+    backgroundColor: "#8B5CF6",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  greeting: {
+  profileInitial: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
-  logoutButton: {
-    padding: 8,
-  },
-  topRow: {
-    paddingHorizontal: 20,
-    marginTop: 8,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  userInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  avatar: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#111827', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#1F2937' },
-  welcomeLabel: { color: '#E5E7EB', fontWeight: '700' },
-  emailLabel: { color: '#9CA3AF', fontSize: 12 },
-  bellButton: { padding: 8 },
-  illustrationContainer: {
-    position: 'absolute',
-    top: 80,
-    right: -50,
-    width: 200,
-    height: 150,
-    zIndex: 1,
-  },
-  personIllustration: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    width: 60,
-    height: 80,
-  },
-  personHead: {
-    width: 20,
-    height: 20,
-    backgroundColor: '#FF8C00',
-    borderRadius: 10,
-    position: 'absolute',
-    top: 0,
-    left: 20,
-  },
-  personBody: {
-    width: 30,
-    height: 40,
-    backgroundColor: '#FF8C00',
-    borderRadius: 15,
-    position: 'absolute',
-    top: 15,
-    left: 15,
-  },
-  laptop: {
-    width: 25,
-    height: 15,
-    backgroundColor: '#87CEEB',
-    borderRadius: 3,
-    position: 'absolute',
-    top: 35,
-    left: 10,
-  },
-  floatingCoin: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#FFD700',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  coinText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#000000',
-  },
-  coin1: {
-    top: 10,
-    right: 60,
-  },
-  coin2: {
-    top: 40,
-    right: 30,
-  },
-  coin3: {
-    top: 70,
-    right: 50,
-  },
-  connectionLine: {
-    position: 'absolute',
-    height: 2,
-    backgroundColor: '#10B981',
-  },
-  line1: {
-    width: 30,
-    top: 20,
-    right: 40,
-    backgroundColor: '#10B981',
-  },
-  line2: {
-    width: 25,
+  profileDropdown: {
+    position: "absolute",
     top: 50,
-    right: 20,
-    backgroundColor: '#FF8C00',
+    right: 0,
+    backgroundColor: "#111827",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#1F2937",
+    minWidth: 160,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 1000,
   },
-  line3: {
-    width: 20,
-    top: 80,
-    right: 30,
-    backgroundColor: '#8B5CF6',
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 12,
+  },
+  menuItemText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#FFFFFF",
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: "#1F2937",
+    marginVertical: 4,
   },
   balanceCard: {
     marginHorizontal: 20,
-    marginTop: 12,
+    marginTop: 0,
     marginBottom: 20,
     borderRadius: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
-  balanceCardDark: {
-    marginHorizontal: 20,
-    marginTop: 4,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#1F2937',
-    backgroundColor: '#111827',
-  },
-  balanceDarkBody: { padding: 16 },
-  balanceLabelDark: { fontSize: 12, color: '#9CA3AF', marginBottom: 6 },
-  balanceAmountDark: { fontSize: 28, fontWeight: '800', color: '#F9FAFB' },
-  balanceHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  balanceChangeCol: { alignItems: 'flex-end' },
-  profitAmount: { color: '#10B981', fontWeight: '700' },
-  profitPercent: { color: '#10B981', fontSize: 12 },
-  balanceActionsRow: { flexDirection: 'row', gap: 12, marginTop: 12 },
-  pill: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 10, paddingHorizontal: 14, borderRadius: 10 },
-  primaryPill: { backgroundColor: '#1F2937', borderWidth: 1, borderColor: '#374151' },
-  secondaryPill: { backgroundColor: '#F3F4F6' },
-  pillText: { color: '#E5E7EB', fontWeight: '600', fontSize: 12 },
-  pillTextDark: { color: '#111827', fontWeight: '700', fontSize: 12 },
   balanceGradient: {
     padding: 24,
   },
   balanceLabel: {
     fontSize: 14,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     opacity: 0.8,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   balanceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  balanceLeft: {
+    flex: 1,
   },
   balanceAmount: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    marginBottom: 4,
+    lineHeight: 40,
+  },
+  balanceSubtext: {
+    fontSize: 12,
+    color: "#FFFFFF",
+    opacity: 0.7,
   },
   balanceChange: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(16, 185, 129, 0.2)',
-    paddingHorizontal: 8,
-    paddingVertical: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(16, 185, 129, 0.2)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 12,
   },
   changeText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#10B981',
+    fontWeight: "600",
+    color: "#10B981",
     marginLeft: 4,
   },
   actionButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 20,
-    marginTop: 8,
-    marginBottom: 16,
+    marginBottom: 20,
     gap: 12,
   },
   actionButton: {
     flex: 1,
-    height: 48,
+    height: 56,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sellButton: {
+    backgroundColor: "#8B5CF6",
+  },
+  sellButtonText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  secondaryButton: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#333333",
+  },
+  secondaryButtonText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   myFundsHeaderRow: {
     paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 0, // Reduce top margin to tighten MY FUNDS header vertical space
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12,
   },
-  sectionTitle: { color: '#9CA3AF', fontSize: 12 },
+  sectionTitle: { color: "#9CA3AF", fontSize: 12, fontWeight: "600" },
   fundsCarousel: {
     paddingHorizontal: 16,
+    paddingBottom: 12,
   },
   fundCard: {
     width: width * 0.68,
     marginRight: 12,
-    backgroundColor: '#111827',
+    backgroundColor: "#111827",
     borderWidth: 1,
-    borderColor: '#1F2937',
+    borderColor: "#1F2937",
     borderRadius: 16,
-    padding: 8, // Reduce inner padding to lower overall card height for MY FUNDS items
-    height: 140, // Hard cap the card height so Bitcoin/My Funds cards are not too tall
+    padding: 12,
+    height: 140,
   },
-  addFundCard: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  fundHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }, // Slightly smaller gap to further reduce vertical footprint
-  fundTitle: { color: '#F3F4F6', fontWeight: '700' },
-  fundCode: { color: '#9CA3AF', marginLeft: 4, fontSize: 11 },
-  fundMiniChartGreen: { height: 150, backgroundColor: '#064E3B', borderRadius: 6, marginBottom: 10 }, // Further reduce mini-chart height for a more compact card
-  fundFooterRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  fundPrice: { color: '#E5E7EB', fontWeight: '700', fontSize: 14 },
-  fundChangeGreen: { color: '#10B981', fontSize: 11 },
+  fundHeaderRow: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 8 },
+  fundTitle: { color: "#F3F4F6", fontWeight: "700", fontSize: 14 },
+  fundCode: { color: "#9CA3AF", marginLeft: 4, fontSize: 11 },
+  fundMiniChartGreen: { height: 40, borderRadius: 6, marginBottom: 8 },
+  fundFooterRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  fundPrice: { color: "#E5E7EB", fontWeight: "700", fontSize: 14 },
+  fundChangeGreen: { color: "#10B981", fontSize: 11 },
   segmentsRow: {
-    marginTop: 8,
-    flexDirection: 'row',
+    marginBottom: 16,
+    flexDirection: "row",
     gap: 8,
     paddingHorizontal: 20,
   },
-  segment: { flex: 1, backgroundColor: '#0B0F16', borderRadius: 10, paddingVertical: 10, alignItems: 'center', borderWidth: 1, borderColor: '#1F2937' },
-  segmentActive: { backgroundColor: '#111827' },
-  segmentText: { color: '#9CA3AF', fontSize: 12 },
-  segmentActiveText: { color: '#E5E7EB', fontWeight: '700', fontSize: 12 },
-  sellButton: {
-    backgroundColor: '#8B5CF6',
-  },
-  sellButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  secondaryButton: {
-    backgroundColor: 'transparent',
+  segment: {
+    flex: 1,
+    backgroundColor: "#1F2937",
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#333333',
+    borderColor: "#374151",
   },
-  secondaryButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
+  segmentActive: { backgroundColor: "#8B5CF6", borderColor: "#8B5CF6" },
+  segmentText: { color: "#9CA3AF", fontSize: 12, fontWeight: "500" },
+  segmentActiveText: { color: "#FFFFFF", fontWeight: "700", fontSize: 12 },
   holdingsSection: {
     paddingHorizontal: 20,
-    marginBottom: 40,
-  },
-  holdingsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  holdingsTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  seeAllText: {
-    fontSize: 14,
-    color: '#CCCCCC',
+    paddingBottom: 20,
   },
   holdingsList: {
     gap: 16,
   },
   holdingItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 12,
   },
   holdingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   cryptoIcon: {
     width: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: '#333333',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#333333",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12,
   },
   cryptoIconText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
   cryptoInfo: {
     flex: 1,
   },
   cryptoName: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 2,
   },
   cryptoCode: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: "#CCCCCC",
   },
   holdingRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   chartContainer: {
     width: 40,
     height: 20,
     marginRight: 12,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   chartLine: {
     height: 2,
     borderRadius: 1,
   },
   greenLine: {
-    backgroundColor: '#10B981',
+    backgroundColor: "#10B981",
   },
   orangeLine: {
-    backgroundColor: '#FF8C00',
+    backgroundColor: "#FF8C00",
   },
   holdingValues: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   holdingValue: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 2,
   },
   holdingQuantity: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: "#CCCCCC",
   },
-});
+  seeAllText: {
+    fontSize: 14,
+    color: "#CCCCCC",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: "#111827",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 40,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+  modalButtonsContainer: {
+    gap: 12,
+  },
+  modalButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1F2937",
+    borderRadius: 12,
+    padding: 16,
+    gap: 16,
+  },
+  modalButtonIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: "#8B5CF6",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalButtonTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginBottom: 4,
+  },
+  modalButtonSubtitle: {
+    fontSize: 13,
+    color: "#9CA3AF",
+  },
+})

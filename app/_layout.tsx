@@ -1,7 +1,9 @@
 import { Session } from '@supabase/supabase-js';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { setBackgroundColorAsync } from 'expo-system-ui';
 import { useEffect, useState } from 'react';
+import { View } from 'react-native';
 import 'react-native-gesture-handler'; // Must be first import in the entry file for RN
 import 'react-native-reanimated'; // Must be loaded before any reanimated usage
 import { supabase } from '../lib/supabase';
@@ -18,6 +20,8 @@ export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
+    // Ensure the OS system background matches app background to avoid white bars
+    setBackgroundColorAsync('#000000').catch(() => {});
     // Initialize session; if refresh token is stale/invalid, sign out to reset storage
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
@@ -34,7 +38,7 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: '#000000' }}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -42,7 +46,7 @@ export default function RootLayout() {
         <Stack.Screen name="dashboard" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
-    </>
+      <StatusBar style="light" backgroundColor="#000000" />
+    </View>
   );
 }

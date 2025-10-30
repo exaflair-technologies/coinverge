@@ -21,14 +21,14 @@ export default function LandingScreen() {
   const router = useRouter();
 
   /**
-   * Check if user is already authenticated and redirect to dashboard
+   * Check if user is already authenticated and redirect to tabs
    */
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        // User is already logged in, redirect to dashboard
-        router.replace('/dashboard' as Href);
+        // User is already logged in, redirect to tabs
+        router.replace('/(tabs)' as Href);
       }
     };
     
