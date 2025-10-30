@@ -97,15 +97,15 @@ export default function TransactionsScreen() {
         <LinearGradient colors={["#000000", "#0a0a0a", "#000000"]} style={styles.gradient} />
       </View>
 
-      <View style={[styles.header, { paddingTop: Math.max(12, insets.top + 8) }]}>
-        <ThemedText style={styles.title}>Transactions</ThemedText>
-      </View>
-
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.scrollContent, { paddingTop: 0 }]}
+        contentContainerStyle={styles.scrollContent}
       >
+        <View style={styles.header}>
+          <ThemedText style={styles.title}>Transactions</ThemedText>
+        </View>
+
         {transactions.map((tx) => (
           <View key={tx.id} style={styles.transactionItem}>
             <View style={[styles.iconContainer, { backgroundColor: getTransactionColor(tx.type) + "20" }]}>
@@ -147,7 +147,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: 16,
     paddingBottom: 20,
   },
   title: {
@@ -157,9 +156,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
   },
   scrollContent: {
+    paddingHorizontal: 20,
     paddingBottom: 40,
   },
   transactionItem: {

@@ -47,9 +47,9 @@ export default function DashboardScreen() {
 
   const handleLogout = async () => {
     try {
+      router.push('/dashboard' as any)
+      setShowProfileMenu(false)
       await supabase.auth.signOut()
-      // onAuthStateChange will handle navigation; add fallback just in case
-      router.replace("/")
     } catch (error) {
       console.error("Logout error:", error)
     }
@@ -106,9 +106,9 @@ export default function DashboardScreen() {
       <ScrollView
         style={styles.pageContainer}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.scrollContent, { paddingTop: Math.max(8, insets.top + 4) }]}
+        contentContainerStyle={styles.scrollContent}
       >
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: Math.max(12, insets.top + 8) }]}>
           <ThemedText style={styles.headerTitle}>Portfolio</ThemedText>
 
           <View style={styles.profileMenuContainer}>
@@ -357,6 +357,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 100,
+    paddingTop: 0, // ensure no extra top padding since header has its own paddingTop
   },
   header: {
     flexDirection: "row",
