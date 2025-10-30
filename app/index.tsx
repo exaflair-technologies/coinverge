@@ -94,8 +94,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 60,
-    paddingBottom: 40,
+    // Avoid double spacing with SafeArea top/bottom
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   illustrationContainer: {
     flex: 1,

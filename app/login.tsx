@@ -7,7 +7,7 @@ import { useRouter, type Href } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Dimensions, Keyboard, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
 
 const { width, height } = Dimensions.get('window');
@@ -18,6 +18,7 @@ const { width, height } = Dimensions.get('window');
  */
 export default function LoginScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   // Complete any pending auth sessions when the app resumes
   WebBrowser.maybeCompleteAuthSession();
 
@@ -89,7 +90,7 @@ export default function LoginScreen() {
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
       
       {/* Back button */}
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+      <TouchableOpacity style={[styles.backButton, { top: insets.top + 8 }]} onPress={handleBack}>
         <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
       </TouchableOpacity>
 
@@ -223,13 +224,14 @@ const styles = StyleSheet.create({
     flex: 1, backgroundColor: '#000000',
   },
   backButton: {
-    position: 'absolute', top: 60, left: 20, zIndex: 10, padding: 8,
+    position: 'absolute', left: 20, zIndex: 10, padding: 8,
   },
   content: {
     flex: 1,
     paddingHorizontal: 22,
-    paddingTop: 28,
-    paddingBottom: 20,
+    // Avoid double spacing with SafeArea top/bottom
+    paddingTop: 0,
+    paddingBottom: 0,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
