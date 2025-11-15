@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native";
 import { useDispatch } from "react-redux";
 import { Image } from "expo-image";
@@ -37,12 +37,14 @@ const Title = styled.Text<{ theme: ThemeType }>`
   font-size: 32px;
   color: ${(props) => props.theme.fonts.colors.primary};
   margin-bottom: ${(props) => props.theme.spacing.small};
+  text-align: center;
 `;
 
 const Subtitle = styled.Text<{ theme: ThemeType }>`
   font-family: ${(props) => props.theme.fonts.families.openRegular};
   font-size: ${(props) => props.theme.fonts.sizes.large};
   color: ${(props) => props.theme.fonts.colors.primary};
+  text-align: center;
 `;
 
 const ButtonContainer = styled.View<{ theme: ThemeType }>`
@@ -162,7 +164,7 @@ export default function WalletSetup() {
           </ImageContainer>
 
           <TextContainer>
-            <Title>Get Started with Ease</Title>
+            <Title>Get Started</Title>
             <Subtitle>
               Secure your financial future with a few easy steps. Your
               decentralized wallet awaits.
