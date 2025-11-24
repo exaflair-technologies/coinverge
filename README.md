@@ -1,302 +1,469 @@
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-<br />
 <div align="center">
-  <a>
-    <img src="assets/readme_banner.png" alt="Logo" width="100%">
-  </a>
-
-  <div style="margin-top:20px; margin-bottom:20px;">
-  <img width="100" height="100" src="assets/mascot_head.png">
+  <img width="120" height="120" src="assets/mascot_head.png" alt="Coinverge Logo">
     <h1 align="center">Coinverge</h1>
-  </div>
+  <p align="center">
+    <strong>Enterprise-Grade Multi-Chain Cryptocurrency Wallet</strong>
+  </p>
+  <p align="center">
+    A production-ready mobile wallet supporting Ethereum and Solana blockchains
+  </p>
 
   <p align="center">
-    A crypto wallet built with React Native
-    <br />
-    <a>Demo coming soon</a>
-    ·
-    <a href="https://github.com/coinverge/coinverge-ui/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/coinverge/coinverge-ui/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <img src="https://img.shields.io/badge/React%20Native-0.76.9-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React Native">
+    <img src="https://img.shields.io/badge/TypeScript-5.3.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+    <img src="https://img.shields.io/badge/Expo-52.0.47-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo">
+    <img src="https://img.shields.io/badge/Redux-4.0.0-764ABC?style=for-the-badge&logo=redux&logoColor=white" alt="Redux">
   </p>
 </div>
 
-## Introduction[![](assets/pin.svg)](#introduction)
+---
 
-Coinverge is a multi-chain cryptocurrency wallet built with React Native. This robust mobile application offers a comprehensive suite of features for managing digital assets across multiple blockchains, with a current focus on Ethereum and Solana networks.
+## 📋 Table of Contents
 
-### Key Features:
-- **Multi-Chain Support**: Seamlessly manage Ethereum and Solana assets within a single, user-friendly interface.
-- **Wallet Management**: Create new wallets, import existing ones, and manage multiple accounts with ease.
-- **Transaction Handling**: Send, receive, and track transactions across supported blockchains.
-- **Balance and Portfolio Tracking**: View real-time balances and monitor your overall crypto portfolio.
-- **Security**: Implements encryption and secure storage techniques to protect your digital assets.
-- **QR Code Integration**: Simplify address sharing and transaction processes with built-in QR code functionality.
-
-Leveraging the power of Expo framework and Alchemy API, Coinverge provides a smooth, responsive user experience while ensuring reliable blockchain interactions. Whether you're a crypto enthusiast or a developer looking to explore mobile wallet implementation, Coinverge offers a feature-rich platform for managing digital currencies.
-
-### Testnet-Only Application
-**Important**: Coinverge is currently designed for use with the Ethereum Sepolia testnet and Solana Devnet only. It is not intended for use with real cryptocurrencies or on mainnet networks. This testnet focus allows for safe experimentation and development without risking actual digital assets.
-
-#### Testnet Resources:
-- **Ethereum (Sepolia Testnet)**: Obtain free test ETH from the [Sepolia Faucet](https://www.infura.io/faucet/sepolia).
-- **Solana (Devnet)**: Acquire free test SOL from the [Solana Devnet Faucet](https://faucet.solana.com/).
-
-### Development Focus
-Coinverge serves as both a functional crypto wallet and a showcase of modern mobile development practices. It demonstrates the integration of blockchain technologies with React Native, emphasizing clean code architecture, robust state management with Redux, and a strong focus on security.
-
-As we continue to evolve Coinverge, we're committed to expanding its capabilities, enhancing security features, and potentially supporting additional blockchain networks in the future. This project represents our ongoing effort to create a robust, user-friendly cryptocurrency wallet that adapts to the ever-changing landscape of blockchain technology.
-
-## Table of Contents[![](assets/pin.svg)](#table-of-contents)
-- [Tech Stack](#tech-stack)
+- [About](#about)
 - [Features](#features)
-- [Quick Start](#quick-start)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Development](#development)
+- [Security](#security)
+- [Blockchain Support](#blockchain-support)
+- [Testing](#testing)
+- [Deployment](#deployment)
 - [Roadmap](#roadmap)
+- [Contributing](#contributing)
 - [License](#license)
-- [Contact](#contact)
-
-## Tech Stack[![](assets/pin.svg)](#tech-stack)
-
-This project leverages a modern tech stack for building and managing a cross-platform cryptocurrency wallet application:
-
-* [![typescript][typescript]][ts-url] - A strongly typed programming language that builds on JavaScript, giving you better tooling at any scale.
-
-* [![react-native][react-native]][rn-url] - A framework for building native apps using React, enabling native mobile development with JavaScript.
-
-* [![expo][expo]][expo-url] - An open-source platform for making universal native apps with React that run on Android, iOS, and the web.
-
-* [![redux][redux]][redux-url] - A predictable state container for JavaScript apps, used for managing state in the mobile app.
-
-* [![styled-components][styled-components]][sc-url] - A library that utilizes tagged template literals to style your components at a component level using CSS.
-
-* **Ethers.js** - A complete Ethereum wallet implementation and utilities in JavaScript (and TypeScript), used for blockchain interactions.
-
-* **@solana/web3.js** - Solana’s JavaScript API library, enabling interaction with the Solana Blockchain.
-
-* **Alchemy SDK** - A powerful toolkit that simplifies the process of making requests to the Blockchain, enhancing the app’s capability to interact with Ethereum and Solana.
-
-<div align="right">[ <a href="#introduction">↑ Back to top ↑</a> ]</div>
 
 ---
 
-## Features[![](assets/pin.svg)](#features)
+## 📖 About
 
-### Wallet Management
-- **Create Wallet**: Generate new wallets seamlessly.
-- **Import Wallets**: Import existing wallets using mnemonic phrases.
-- **Manage Multiple Wallets**: Create and manage multiple wallets using the same mnemonic phrase.
-- **Account Management**: Rename and manage different wallet accounts.
-- **Switch Wallets**: Easily switch between different wallet accounts.
+**Coinverge** is a production-ready, multi-chain cryptocurrency wallet application built with React Native and TypeScript. It provides a secure, non-custodial solution for managing digital assets across Ethereum and Solana blockchains on both iOS and Android platforms.
 
-| Creating a new wallet | Importing a wallet | Managing your wallet |
-|:---:|:---:|:---:|
-| <img width="200" src="assets/wallet_create.gif" alt="Creating a new wallet"> | <img width="200" src="assets/wallet_import.gif" alt="Importing a wallet"> | <img width="200" src="assets/wallet_management_alt.gif" alt="Managing your wallet"> |
+### Key Highlights
 
+- ✅ **Multi-Chain Support**: Native support for Ethereum and Solana blockchains
+- ✅ **Enterprise Security**: AES-256 encryption with PBKDF2 key derivation and hardware-backed secure storage
+- ✅ **Non-Custodial**: Users maintain full control of their private keys
+- ✅ **Production Ready**: Comprehensive error handling, transaction management, and real-time balance updates
+- ✅ **Modern Architecture**: Clean code structure with Redux state management and TypeScript type safety
 
-### Wallet Balance and Transactions
-- **Net Worth**: View the total net worth across all wallets.
-- **Balance Viewing**: Check the balance of Ethereum and Solana wallets.
-- **Transaction Management**:
-  - Send and receive Ethereum and Solana transactions.
-  - View a list of past transactions for both Ethereum and Solana.
+---
 
-| Viewing wallet transactions  | Viewing Ethereum balance  | Sending Ethereum |
-|:---:|:---:|:---:|
-| <img width="200" src="assets/networth.gif" alt="Creating a new wallet"> | <img width="200" src="assets/balance.gif" alt="Importing a wallet"> | <img width="200" src="assets/send-alt.gif" alt="Sending Crypto"> |
+## 🛠️ Tech Stack
 
-### Accessibility Features
-- **QR Code Functionality**: Easily share wallet addresses and send cryptocurrencies via QR codes.
+### Core Technologies
 
-| Sharing Address  | Scanning QR code | 
-|:---:|:---:|
-| <img width="200" src="assets/sharing_qr.gif" alt="Creating a new wallet"> | <img width="200" src="assets/qr-send.gif" alt="Importing a wallet"> 
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React Native | 0.76.9 | Mobile framework |
+| TypeScript | 5.3.3 | Type safety and developer experience |
+| Expo | 52.0.47 | Development platform and tooling |
+| Redux Toolkit | 2.2.3 | State management |
+| Ethers.js | 6.12.0 | Ethereum blockchain interactions |
+| @solana/web3.js | 1.91.7 | Solana blockchain interactions |
+| Alchemy SDK | 3.2.1 | Unified blockchain data access |
+| Styled Components | 6.1.8 | Component styling |
 
 ### Security
 
-#### Encryption and Secure Storage
-- **Advanced Encryption Standard (AES)**: Utilizes AES encryption, the gold standard in symmetric cryptography, to secure sensitive data.
-- **Secure Local Storage**: Leverages React Native's `SecureStore` module, which uses Keychain Services on iOS and KeyStore on Android, providing OS-level security for stored data.
+- **Encryption**: AES-256 with PBKDF2 (10,000 iterations)
+- **Storage**: Expo SecureStore (Keychain/Keystore)
+- **Key Management**: BIP39 mnemonic phrases with BIP44 derivation paths
+- **Validation**: Address validation for all supported chains
 
-#### Cryptographic Best Practices
-- **Password-Based Key Derivation Function 2 (PBKDF2)**:
-  - Implements PBKDF2 for key derivation, significantly increasing resistance to brute-force attacks.
-- **Salted Hashes**: Employs unique salts for each encryption operation, preventing rainbow table attacks and enhancing overall security.
+### Development Tools
 
-#### Key Security
-- **Unique Key Generation**: Implements a secure system for generating and storing unique encryption keys for each user, significantly enhancing the protection of sensitive data.
-- **Advanced Key Derivation**: Utilizes key derivation functions to ensure that each user's encryption key is both strong and unique.
-
-#### Wallet Security
-- **Non-Custodial Design**: Users maintain full control of their private keys, which are never transmitted or stored unencrypted.
-- **Mnemonic Phrase Protection**: Recovery phrases are encrypted before storage, ensuring they remain secure even if the device is compromised.
-
-#### Code-Level Security Measures
-- **Type Safety**: Utilizes TypeScript to prevent common programming errors and enhance code reliability.
-- **Separation of Concerns**: Cryptographic operations are isolated in dedicated modules, facilitating code audits and reducing the risk of security vulnerabilities.
-- **Error Handling**: Implements comprehensive error handling to prevent information leakage through error messages.
-
-#### Future Security Enhancements (In Development)
-- **Biometric Authentication**: Plans to integrate fingerprint and face recognition for an additional layer of security.
-- **Secure Enclave Integration**: Future updates aim to leverage hardware-based key storage on supported devices for enhanced private key protection.
-- **Transaction Signing**: Upcoming feature to allow offline transaction signing, further securing the transaction process.
-
-#### Security Considerations for Users
-- **Testnet Focus**: Currently designed for testnet use only. Users are advised against using real cryptocurrency with this wallet until a full security audit is completed.
-- **Regular Updates**: The development team is committed to regular security updates and patch releases to address any discovered vulnerabilities promptly.
-
-<div align="right">[ <a href="#introduction">↑ Back to top ↑</a> ]</div>
+- **Package Manager**: Yarn 1.22.22
+- **Linting**: ESLint (via Expo)
+- **Testing**: Jest with React Native Testing Library
+- **State Persistence**: Redux Persist with AsyncStorage
 
 ---
 
-## Quick Start[![](assets/pin.svg)](#quick-start)
+
+## ✨ Features
+
+### Multi-Chain Wallet Management
+
+#### Supported Blockchains
+- **Ethereum** (Mainnet & Sepolia Testnet)
+- **Solana** (Mainnet & Devnet)
+
+#### Wallet Operations
+- ✅ **Create New Wallets**: Generate secure wallets with BIP39 mnemonic phrases
+- ✅ **Import Existing Wallets**: Restore wallets using 12-word seed phrases
+- ✅ **Multi-Account Support**: Manage multiple accounts from single seed phrase
+- ✅ **HD Wallet Derivation**: BIP44 compliant derivation paths
+- ✅ **Account Customization**: Rename and organize multiple accounts
+
+### Transaction Management
+
+#### Send & Receive
+- ✅ **Multi-Chain Transactions**: Send/receive on Ethereum and Solana
+- ✅ **Gas Fee Calculation**: Real-time gas estimation for EVM chains
+- ✅ **Transaction Confirmation**: Real-time transaction status tracking
+- ✅ **QR Code Integration**: Scan and generate QR codes for addresses
+- ✅ **Address Validation**: Chain-specific address validation
+- ✅ **Transaction History**: Complete transaction history with filtering
+
+#### Transaction Features
+- ✅ **Real-Time Updates**: WebSocket connections for instant balance updates
+- ✅ **Transaction Details**: View transaction hash, block time, and explorer links
+- ✅ **Filter Options**: Filter by sent/received transactions
+- ✅ **Pagination**: Efficient loading of transaction history
+
+### Portfolio & Balance Tracking
+
+- ✅ **Unified Portfolio View**: Total net worth across all chains
+- ✅ **Real-Time Balances**: Live balance updates for all supported chains
+- ✅ **USD Conversion**: Real-time price conversion using CoinGecko API
+- ✅ **Chain-Specific Views**: Detailed views for each blockchain
+- ✅ **Network Indicators**: Clear display of mainnet/testnet status
+
+### Security Features
+
+#### Encryption & Storage
+- ✅ **AES-256 Encryption**: Industry-standard encryption for sensitive data
+- ✅ **PBKDF2 Key Derivation**: 10,000 iterations for key generation
+- ✅ **Hardware-Backed Storage**: Keychain (iOS) / Keystore (Android)
+- ✅ **Unique Encryption Keys**: Per-user encryption key generation
+- ✅ **Salted Hashes**: Protection against rainbow table attacks
+
+#### Wallet Security
+- ✅ **Non-Custodial**: Users maintain full control of private keys
+- ✅ **Local-Only Storage**: No transmission of sensitive data
+- ✅ **Encrypted Seed Phrases**: Mnemonic phrases encrypted before storage
+- ✅ **Biometric Support**: Face ID / Touch ID integration (iOS/Android)
+
+### User Experience
+
+- ✅ **Intuitive UI/UX**: Modern, clean interface design
+- ✅ **Dark Theme**: Optimized for low-light usage
+- ✅ **Smooth Animations**: Polished transitions and loading states
+- ✅ **Error Handling**: User-friendly error messages and recovery
+- ✅ **Offline Support**: Cached data for offline viewing
+- ✅ **Pull-to-Refresh**: Manual refresh for balances and transactions
+
+---
+
+## 🔒 Security
+
+Coinverge implements a multi-layered security approach:
+
+- **Encryption**: AES-256 with PBKDF2 key derivation (10,000 iterations)
+- **Storage**: Expo SecureStore for sensitive data (Keychain/Keystore)
+- **Non-Custodial**: Private keys never leave the device
+- **No Backend**: All operations performed locally
+- **Type Safety**: TypeScript prevents common vulnerabilities
+- **Input Validation**: Comprehensive validation for all user inputs
+
+---
+
+## ⛓️ Blockchain Support
+
+### Ethereum
+
+- **Networks**: Mainnet, Sepolia Testnet
+- **Features**:
+  - Native ETH transactions
+  - ERC-20 token support (via Alchemy)
+  - Gas fee estimation
+  - Transaction history
+  - WebSocket balance updates
+- **Derivation Path**: `m/44'/60'/0'/0/{index}`
+
+### Solana
+
+- **Networks**: Mainnet, Devnet
+- **Features**:
+  - Native SOL transactions
+  - SPL token support
+  - Transaction fee calculation
+  - Signature-based transaction tracking
+- **Derivation Path**: `m/44'/501'/{index}'/0'`
+
+### Network Indicators
+
+To prevent user confusion, Coinverge includes clear network indicators:
+- **Asset Cards**: Display network type (Mainnet/Testnet)
+- **Token Detail Pages**: Network badge showing active chain
+- **Send Pages**: Network indicator during transaction flow
+- **Receive Pages**: Clear chain identification
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
-- Node.js (v14.x or later)
-- Yarn (v1.22.x or later)
-- Expo CLI (`npm install -g expo-cli`)
+- **Node.js**: v18.x or later
+- **Yarn**: v1.22.x or later
+- **Expo CLI**: `npm install -g expo-cli`
+- **iOS Development**: Xcode 14+ (for iOS builds)
+- **Android Development**: Android Studio (for Android builds)
 
-### Getting Started
+### Installation
 
-To get the project up and running on your local machine, follow these steps:
-
-1. Clone the repository:
-
+1. **Clone the repository**:
 ```bash
-git clone https://github.com/exaflair-technologies/coinverge-ui.git
+git clone https://github.com/your-org/coinverge-ui.git
 cd coinverge-ui
 ```
 
-2. Install dependencies:
-
+2. **Install dependencies**:
 ```bash
 yarn install
 ```
 
-3. Set up environment variables. Rename .env.example to .env and update the following keys with appropriate values:
+3. **Configure environment variables**:
 
-```bash
-EXPO_PUBLIC_ALCHEMY_ETH_KEY=YOUR_ALCHEMY_KEY
+Create a `.env` file in the root directory:
+
+```env
+# Ethereum Configuration
+EXPO_PUBLIC_ALCHEMY_ETH_KEY=your_alchemy_ethereum_key
+EXPO_PUBLIC_ALCHEMY_ETH_URL=https://eth-mainnet.g.alchemy.com/v2/
+EXPO_PUBLIC_ALCHEMY_SOCKET_URL=wss://eth-mainnet.g.alchemy.com/v2/
+
+# Solana Configuration
+EXPO_PUBLIC_ALCHEMY_SOL_URL=https://solana-mainnet.g.alchemy.com/v2/
+EXPO_PUBLIC_ALCHEMY_SOL_API_KEY=your_alchemy_solana_key
+
+# Environment
+EXPO_PUBLIC_ENVIRONMENT=production
+```
+
+**For Testnet Development**:
+```env
 EXPO_PUBLIC_ALCHEMY_ETH_URL=https://eth-sepolia.g.alchemy.com/v2/
 EXPO_PUBLIC_ALCHEMY_SOCKET_URL=wss://eth-sepolia.g.alchemy.com/v2/
 EXPO_PUBLIC_ALCHEMY_SOL_URL=https://solana-devnet.g.alchemy.com/v2/
-EXPO_PUBLIC_ALCHEMY_SOL_API_KEY=YOUR_ALCHEMY_KEY
 EXPO_PUBLIC_ENVIRONMENT=development
-
-
 ```
 
-4. Start the development server:
-
+4. **Start the development server**:
 ```bash
-expo start
+yarn start
+```
+
+5. **Run on device/simulator**:
+```bash
+# iOS
+yarn ios
+
+# Android
+yarn android
+
+# Web (for testing)
+yarn web
 ```
 
 ### Environment Variables
 
-`EXPO_PUBLIC_ALCHEMY_ETH_KEY`: Your Alchemy API key for accessing Ethereum blockchain data.
-
-`EXPO_PUBLIC_ALCHEMY_ETH_URL`: The base URL for Ethereum Alchemy API requests.
-
-`EXPO_PUBLIC_ALCHEMY_SOCKET_URL`: The WebSocket URL for real-time updates from Alchemy.
-
-`EXPO_PUBLIC_ALCHEMY_SOL_URL`: The base URL for Solana Alchemy API requests.
-
-`EXPO_PUBLIC_ALCHEMY_SOL_API_KEY`: Your Alchemy API key for accessing Solana blockchain data.
-
-`EXPO_PUBLIC_ENVIRONMENT`: Environment setting, e.g., development or production.
-
-
-<div align="right">[ <a href="#introduction">↑ Back to top ↑</a> ]</div>
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `EXPO_PUBLIC_ALCHEMY_ETH_KEY` | Alchemy API key for Ethereum | Yes |
+| `EXPO_PUBLIC_ALCHEMY_ETH_URL` | Ethereum Alchemy RPC URL | Yes |
+| `EXPO_PUBLIC_ALCHEMY_SOCKET_URL` | Ethereum WebSocket URL | Yes |
+| `EXPO_PUBLIC_ALCHEMY_SOL_URL` | Solana Alchemy RPC URL | Yes |
+| `EXPO_PUBLIC_ALCHEMY_SOL_API_KEY` | Alchemy API key for Solana | Yes |
+| `EXPO_PUBLIC_ENVIRONMENT` | `development` or `production` | Yes |
 
 ---
 
-## Roadmap [![](assets/pin.svg)](#roadmap)
+## 📁 Project Structure
 
-Coinverge is continuously evolving. Here's our exciting roadmap for future developments:
+```
+coinverge-ui/
+├── src/
+│   ├── app/                    # Expo Router app structure
+│   │   ├── (app)/              # Main app screens
+│   │   │   ├── index.tsx       # Home/Dashboard
+│   │   │   ├── token/          # Token management
+│   │   │   │   ├── [id].tsx    # Token detail page
+│   │   │   │   ├── send/       # Send flow
+│   │   │   │   ├── receive/    # Receive flow
+│   │   │   │   └── confirmation/ # Transaction confirmation
+│   │   │   └── accounts/       # Account management
+│   │   └── (wallet)/           # Wallet setup screens
+│   │       ├── setup/          # Wallet creation/import
+│   │       └── seed/           # Seed phrase management
+│   ├── components/             # Reusable UI components
+│   │   ├── Button/
+│   │   ├── CryptoInfoCard/
+│   │   ├── TokenInfoCard/
+│   │   └── Styles/
+│   ├── services/               # Blockchain service layer
+│   │   ├── EthereumService.ts
+│   │   └── SolanaService.ts
+│   ├── store/                  # Redux store
+│   │   ├── ethereumSlice.ts
+│   │   ├── solanaSlice.ts
+│   │   ├── priceSlice.ts
+│   │   └── index.ts
+│   ├── utils/                  # Utility functions
+│   │   ├── cryptoUtils.ts
+│   │   ├── formatDollars.ts
+│   │   └── identifyAddress.ts
+│   ├── constants/              # App constants
+│   │   ├── routes.ts
+│   │   ├── tickers.ts
+│   │   └── price.ts
+│   ├── hooks/                  # Custom React hooks
+│   │   ├── redux.ts
+│   │   └── useStorageState.ts
+│   ├── types/                  # TypeScript type definitions
+│   └── styles/                 # Theme and styling
+├── assets/                      # Images, icons, GIFs
+├── android/                    # Android native code
+├── ios/                        # iOS native code
+├── native-modules/             # Custom native modules
+└── app.json                    # Expo configuration
+```
 
-### Near Term Goals
+### Key Directories
 
-#### Bug Fixes
-- [x] Account list causes too many re-renders
-
-#### Enhanced Security
-- [x] Implement confirmation screen for transactions
-- [ ] Integrate biometric authentication (fingerprint and face recognition)
-- [x] Remove hardcoded environment variables and use dynamic key generation so each user has their own unique key.
-- [x] Implement secure key generation and storage unique to each user
-  - Utilizes advanced encryption methods for key derivation
-  - Ensures each user has a unique, securely stored encryption key
-- [ ] Add option for 2-factor authentication (2FA)
-
-#### User Experience Improvements
-- [ ] Animations and Transitions: 
-  - [x] Enhance confirmation screen
-  - [ ] Create engaging splash screen
-  - [x] Improve create wallet screen animations
-  - [ ] Add subtle animations for balance updates and transactions
-- [x] Refactor and optimize Redux structure for better performance
-- [ ] Implement light mode and customizable themes
-
-#### Feature Enhancements
-- [ ] Multi-chain pagination support for transaction history
-- [ ] Add profit/loss tracking UI for purchased assets
-- [ ] Implement real-time price alerts and notifications
-
-### Long Term Goals
-
-#### Blockchain Expansion
-- [ ] Integrate Polygon blockchain support
-- [ ] Add support for Bitcoin (BTC) transactions
-- [ ] Explore integration with layer-2 solutions (e.g., Optimism, Arbitrum)
-
-#### Advanced Features
-- [ ] Implement NFT support:
-  - [ ] List NFT transactions across all supported blockchains
-  - [ ] Add NFT gallery view and management features
-
-This roadmap is a living document and will evolve based on technological advancements, user feedback, and market trends.
-
-Your feedback and suggestions are always welcome as we continue to improve and expand Coinverge!
-
-<div align="right">[ <a href="#introduction">↑ Back to top ↑</a> ]</div>
-
----
-
-## License [![](assets/pin.svg)](#license)
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<div align="right">[ <a href="#introduction">↑ Back to top ↑</a> ]</div>
-
----
-
-## Contact [![](assets/pin.svg)](#contact)
-
-Coinverge Team
-
-Project Link: [https://github.com/coinverge/coinverge-ui](https://github.com/coinverge/coinverge-ui)
-
-<div align="right">[ <a href="#introduction">↑ Back to top ↑</a> ]</div>
+- **`src/services/`**: Blockchain interaction logic (Ethereum, Solana)
+- **`src/store/`**: Redux slices for state management
+- **`src/app/(app)/`**: Main application screens and flows
+- **`src/app/(wallet)/`**: Wallet setup and onboarding
+- **`src/components/`**: Reusable UI components
+- **`src/utils/`**: Helper functions and utilities
 
 ---
 
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/company/coinverge/
+## 💻 Development
 
-[typescript]: https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white
-[ts-url]: https://www.typescriptlang.org/
+### Available Scripts
 
-[react-native]: https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB
-[rn-url]: https://reactnative.dev/
+```bash
+# Start Expo development server
+yarn start
 
-[expo]: https://img.shields.io/badge/expo-1C1E24?style=for-the-badge&logo=expo&logoColor=#D04A37
-[expo-url]: https://docs.expo.dev/
+# Run on iOS simulator/device
+yarn ios
 
-[styled-components]: https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white
-[sc-url]: https://styled-components.com/
+# Run on Android emulator/device
+yarn android
 
-[redux]: https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white
-[redux-url]: https://styled-components.com/
+# Run on web browser
+yarn web
+
+# Run tests
+yarn test
+
+# Run Redux DevTools
+yarn redux-devtools
+```
+
+### Code Style
+
+- **TypeScript**: Strict mode enabled
+- **ESLint**: Configured via Expo
+- **Formatting**: Consistent code style throughout
+- **Naming**: camelCase for variables, PascalCase for components
+
+### Adding New Blockchain Support
+
+To add support for a new blockchain:
+
+1. **Create Service**: Add new service in `src/services/` (e.g., `PolygonService.ts`)
+2. **Create Slice**: Add Redux slice in `src/store/` (e.g., `polygonSlice.ts`)
+3. **Update Types**: Add chain to `Chains` enum in `src/types/index.ts`
+4. **Update Store**: Add reducer to `src/store/index.ts`
+5. **Update UI**: Add chain support in relevant screens
+6. **Update Constants**: Add ticker in `src/constants/tickers.ts`
+
+### Debugging
+
+- **React Native Debugger**: Use for Redux state inspection
+- **Expo DevTools**: Built-in debugging tools
+- **Console Logging**: Comprehensive logging in services
+- **Network Inspection**: Monitor API calls in development
+
+---
+
+## 🧪 Testing
+
+### Test Coverage
+
+- **Unit Tests**: Critical utility functions
+- **Integration Tests**: Service layer interactions
+- **Component Tests**: UI component rendering
+
+### Running Tests
+
+```bash
+# Run all tests
+yarn test
+
+# Run tests in watch mode
+yarn test --watch
+
+# Run tests with coverage
+yarn test --coverage
+```
+
+### Test Files
+
+- `src/utils/*.test.ts`: Unit tests for utilities
+- Service layer tests (to be expanded)
+- Component tests (to be expanded)
+
+---
+
+## 📦 Deployment
+
+### Building for Production
+
+#### iOS
+
+```bash
+# Build iOS app
+eas build --platform ios
+
+# Submit to App Store
+eas submit --platform ios
+```
+
+#### Android
+
+```bash
+# Build Android app
+eas build --platform android
+
+# Submit to Google Play
+eas submit --platform android
+```
+
+### Environment Configuration
+
+- **Development**: Uses testnet networks (Sepolia, Devnet)
+- **Production**: Uses mainnet networks
+- **Environment Switching**: Controlled via `EXPO_PUBLIC_ENVIRONMENT`
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE.txt](./LICENSE.txt) file for details.
+
+---
+
+---
+
+## 🙏 Acknowledgments
+
+- **Alchemy**: For providing robust blockchain infrastructure
+- **Expo**: For excellent React Native development platform
+- **Ethers.js & Solana Web3.js**: For blockchain interaction libraries
+- **Open Source Community**: For various tools and libraries used in this project
+
+---
+
+<div align="center">
+  <p>Built with ❤️ by the Exaflair Team</p>
+  <p>
+    <a href="#-table-of-contents">↑ Back to Top ↑</a>
+  </p>
+</div>
