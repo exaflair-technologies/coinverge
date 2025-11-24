@@ -27,16 +27,16 @@ export default function SendOptions() {
   const theme = useTheme();
   const router = useRouter();
   const activeEthIndex = useSelector(
-    (state: RootState) => state.ethereum.activeIndex
+    (state: RootState) => state.ethereum.activeIndex ?? 0
   );
   const activeSolIndex = useSelector(
-    (state: RootState) => state.solana.activeIndex
+    (state: RootState) => state.solana.activeIndex ?? 0
   );
   const ethBalance = useSelector(
-    (state: RootState) => state.ethereum.addresses[activeEthIndex].balance
+    (state: RootState) => state.ethereum.addresses[activeEthIndex]?.balance ?? 0
   );
   const solBalance = useSelector(
-    (state: RootState) => state.solana.addresses[activeSolIndex].balance
+    (state: RootState) => state.solana.addresses[activeSolIndex]?.balance ?? 0
   );
   const prices = useSelector((state: RootState) => state.price.data);
   const solPrice = prices.solana.usd;

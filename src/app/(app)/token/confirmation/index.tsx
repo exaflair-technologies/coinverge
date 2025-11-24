@@ -80,13 +80,13 @@ export default function Confirmation() {
 
   const chain = blockchain as string;
   const activeIndex = useSelector(
-    (state: RootState) => state[chain].activeIndex
+    (state: RootState) => state[chain].activeIndex ?? 0
   );
 
   const transactionConfirmation = useSelector((state: RootState) =>
-    state[chain].addresses[activeIndex].transactionConfirmations.find(
+    state[chain].addresses[activeIndex]?.transactionConfirmations?.find(
       (tx) => tx.txHash === txHash
-    )
+    ) ?? null
   );
 
   useEffect(() => {

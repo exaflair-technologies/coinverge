@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { ThemeType } from "../../../../styles/theme";
 import type { RootState } from "../../../../store";
 import { capitalizeFirstLetter } from "../../../../utils/capitalizeFirstLetter";
+import { Chains } from "../../../../types";
 import { truncateWalletAddress } from "../../../../utils/truncateWalletAddress";
 import Button from "../../../../components/Button/Button";
 import { SafeAreaContainer } from "../../../../components/Styles/Layout.styles";
@@ -102,11 +103,15 @@ export default function ReceivePage() {
   const { receive } = useLocalSearchParams();
   const chainName = receive as string;
   const navigation = useNavigation();
-  const activeIndex = useSelector(
-    (state: RootState) => state.ethereum.activeIndex
+  const activeEthIndex = useSelector(
+    (state: RootState) => state.ethereum.activeIndex ?? 0
   );
+  const activeSolIndex = useSelector(
+    (state: RootState) => state.solana.activeIndex ?? 0
+  );
+  const activeIndex = chainName === Chains.Ethereum ? activeEthIndex : activeSolIndex;
   const tokenAddress = useSelector(
-    (state: RootState) => state[chainName].addresses[activeIndex].address
+    (state: RootState) => state[chainName].addresses[activeIndex]?.address ?? ""
   );
   const [isAmountInputFocused, setIsAmountInputFocused] = useState(false);
   const [buttonText, setButtonText] = useState("Copy");

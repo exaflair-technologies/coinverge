@@ -101,17 +101,18 @@ export default function SendConfirmationPage() {
 
   const prices = useSelector((state: RootState) => state.price.data);
   const activeEthIndex = useSelector(
-    (state: RootState) => state.ethereum.activeIndex
+    (state: RootState) => state.ethereum.activeIndex ?? 0
   );
   const activeSolIndex = useSelector(
-    (state: RootState) => state.solana.activeIndex
+    (state: RootState) => state.solana.activeIndex ?? 0
   );
+  const activeIndex = chainName === Chains.Ethereum ? activeEthIndex : activeSolIndex;
   const walletAddress = useSelector(
-    (state: RootState) => state[chainName].addresses[activeEthIndex].address
+    (state: RootState) => state[chainName].addresses[activeIndex]?.address ?? ""
   );
   const derivationPath = useSelector(
     (state: RootState) =>
-      state[chainName].addresses[activeSolIndex].derivationPath
+      state[chainName].addresses[activeIndex]?.derivationPath ?? ""
   );
 
   const solPrice = prices.solana.usd;

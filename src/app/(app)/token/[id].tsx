@@ -164,28 +164,32 @@ export default function Index() {
   const isStateLoading = useLoadingState();
   const chainName = id as string;
 
-  const activeIndex = useSelector(
-    (state: RootState) => state.ethereum.activeIndex
+  const activeEthIndex = useSelector(
+    (state: RootState) => state.ethereum.activeIndex ?? 0
   );
+  const activeSolIndex = useSelector(
+    (state: RootState) => state.solana.activeIndex ?? 0
+  );
+  const activeIndex = chainName === Chains.Ethereum ? activeEthIndex : activeSolIndex;
   const tokenAddress = useSelector(
-    (state: RootState) => state[chainName].addresses[activeIndex].address
+    (state: RootState) => state[chainName].addresses[activeIndex]?.address ?? ""
   );
   const tokenBalance = useSelector(
-    (state: RootState) => state[chainName].addresses[activeIndex].balance
+    (state: RootState) => state[chainName].addresses[activeIndex]?.balance ?? 0
   );
   const transactionHistory = useSelector(
     (state: RootState) =>
-      state[chainName].addresses[activeIndex].transactionMetadata.transactions
+      state[chainName].addresses[activeIndex]?.transactionMetadata?.transactions ?? []
   );
 
   const failedNetworkRequest = useSelector(
     (state: RootState) =>
-      state[chainName].addresses[activeIndex].failedNetworkRequest
+      state[chainName].addresses[activeIndex]?.failedNetworkRequest ?? false
   );
 
   const failedStatus = useSelector(
     (state: RootState) =>
-      state[chainName].addresses[activeIndex].status === GeneralStatus.Failed
+      state[chainName].addresses[activeIndex]?.status === GeneralStatus.Failed
   );
 
   // const loadingStatus = useSelector(

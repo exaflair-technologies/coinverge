@@ -225,7 +225,7 @@ export default function Index() {
   }, [ethBalance, solBalance, dispatch]);
 
   const updatePrices = () => {
-    if (ethWalletAddress && solWalletAddress) {
+    if (ethWalletAddress || solWalletAddress) {
       const ethUsd = ethPrice * ethBalance;
       const solUsd = solPrice * solBalance;
 
