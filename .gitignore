@@ -7,10 +7,8 @@ node_modules/
 .expo/
 dist/
 web-build/
-expo-env.d.ts
 
 # Native
-.kotlin/
 *.orig.*
 *.jks
 *.p8
@@ -37,4 +35,36 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-app-example
+# Custom
+NOTES.md
+
+# Xcode
+ios/build/
+ios/Pods/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+ios/.xcode.env.local
+
+# Android/IntelliJ
+android/app/build/
+android/.idea
+android/.gradle
+android/local.properties
+*.iml
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
