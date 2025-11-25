@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="120" height="120" src="assets/mascot_head.png" alt="Coinverge Logo">
+  <img width="120" height="120" src="assets/coinverge_wallet.png" alt="Coinverge Logo">
     <h1 align="center">Coinverge</h1>
   <p align="center">
     <strong>Enterprise-Grade Multi-Chain Cryptocurrency Wallet</strong>
