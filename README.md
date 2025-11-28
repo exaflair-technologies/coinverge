@@ -216,7 +216,13 @@ cd coinverge-ui
 yarn install
 ```
 
-3. **Configure environment variables**:
+3. **Install iOS pods (macOS only)**:
+
+```bash
+npx pod-install ios
+```
+
+4. **Configure environment variables**:
 
 Create a `.env` file in the root directory:
 
